@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -21,6 +19,13 @@ public class MathView extends WebView {
 
     public MathView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        if (!isInEditMode()) {  // by-pass initializations in preview
+            init(context, attrs);
+        }
+    }
+
+    private void init(Context context, AttributeSet attrs) {
         getSettings().setJavaScriptEnabled(true);
         getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         setBackgroundColor(Color.TRANSPARENT);
@@ -51,11 +56,19 @@ public class MathView extends WebView {
         String template = TEMPLATE_KATEX;
         AndroidTemplates loader = new AndroidTemplates(getContext());
         switch (mEngine) {
-            case Engine.KATEX: template = TEMPLATE_KATEX; break;
-            case Engine.MATHJAX: template = TEMPLATE_MATHJAX; break;
+            case Engine.KATEX:
+                template = TEMPLATE_KATEX;
+                break;
+            case Engine.MATHJAX:
+                template = TEMPLATE_MATHJAX;
+                break;
         }
 
         return new Theme(loader).makeChunk(template);
+    }
+
+    public String getText() {
+        return mText;
     }
 
     public void setText(String text) {
@@ -69,23 +82,20 @@ public class MathView extends WebView {
         this.loadDataWithBaseURL(null, chunk.toString(), "text/html", "utf-8", "about:blank");
     }
 
-    public String getText() {
-        return mText;
-    }
-
     /**
      * Tweak the configuration of MathJax.
      * The `config` string is a call statement for MathJax.Hub.Config().
      * For example, to enable auto line breaking, you can call:
      * config.("MathJax.Hub.Config({
-     *      CommonHTML: { linebreaks: { automatic: true } },
-     *      "HTML-CSS": { linebreaks: { automatic: true } },
-     *      SVG: { linebreaks: { automatic: true } }
-     *  });");
-     *
+     * CommonHTML: { linebreaks: { automatic: true } },
+     * "HTML-CSS": { linebreaks: { automatic: true } },
+     * SVG: { linebreaks: { automatic: true } }
+     * });");
+     * <p>
      * This method should be call BEFORE setText() and AFTER setEngine().
      * PLEASE PAY ATTENTION THAT THIS METHOD IS FOR MATHJAX ONLY.
-     * @param config 
+     *
+     * @param config
      */
     public void config(String config) {
         if (mEngine == Engine.MATHJAX) {
@@ -95,9 +105,10 @@ public class MathView extends WebView {
 
     /**
      * Set the js engine used for rendering the formulas.
-     * @param engine must be one of the constants in class Engine
      *
-     * This method should be call BEFORE setText().
+     * @param engine must be one of the constants in class Engine
+     *               <p>
+     *               This method should be call BEFORE setText().
      */
     public void setEngine(int engine) {
         switch (engine) {
@@ -109,7 +120,8 @@ public class MathView extends WebView {
                 mEngine = Engine.MATHJAX;
                 break;
             }
-            default: mEngine = Engine.KATEX;
+            default:
+                mEngine = Engine.KATEX;
         }
     }
 
