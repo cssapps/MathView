@@ -1,4 +1,4 @@
-package io.github.kexanie.library;
+package io.github.cssapps.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
