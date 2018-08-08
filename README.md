@@ -154,3 +154,4 @@ If you have any issues or need help please do not hesitate to create an issue ti
 [KaTeX]: https://github.com/Khan/KaTeX
 [Chunk]: https://github.com/tomj74/chunk-templates/
 [link]: https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX
+[![](https://jitpack.io/v/cssapps/MathView.svg)](https://jitpack.io/#cssapps/MathView)
